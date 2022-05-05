@@ -69,6 +69,24 @@ $app->post('/api/login', function(Request $request, Response $response, $args): 
     return $response;
 });
 
+$app->get('/api/catalogue/{filtre}', function(Request $request, Response $response, $args) {
+    $filtre = $args['filtre'];
+    $flux = '[{"titre": "linux", "ref": "001", "prix": "20"}, {"titre":"java", "ref:"002", "prix": "21"}]';
+
+    if($filtre){
+        $data = json_decode($flux, true);
+
+        $res = array_filter($data, function($obj) use ($filtre){
+            return strpos($obj["titre"], $filtre) !== false;
+        });
+        $response->getBody()->write(json_encode(array_values($res)));
+    }
+    else{
+        $response->getBody()->write($flux);
+    }
+    return $response;
+});
+
 $options = [
     "attribute" => "token",
     "header" => "Authorization",
